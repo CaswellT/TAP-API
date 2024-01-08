@@ -1,0 +1,29 @@
+apiVersion: carto.run/v1alpha1
+kind: Workload
+metadata:
+  labels:
+    app.kubernetes.io/part-of: tap-api
+    apps.tanzu.vmware.com/has-tests: "true"
+    apps.tanzu.vmware.com/workload-type: web
+  name: test-api-for-tap
+spec:
+  build:
+    env:
+    - name: BP_DOTNET_PROJECT_PATH
+      value: ./TAP-API
+    - name: BP_DOTNET_FRAMEWORK_VERSION
+      value: 8.0.0
+  params:
+  - name: annotations
+    value:
+      autoscaling.knative.dev/minScale: "1"
+  - name: testing_pipeline_matching_labels
+    value:
+      apps.tanzu.vmware.com/language: dotnet
+      apps.tanzu.vmware.com/pipeline: test
+      apps.tanzu.vmware.com/version: "8.0"
+  source:
+    git:
+      ref:
+        branch: master
+      url: https://github.com/CaswellT/TAP-API.git
